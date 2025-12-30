@@ -1,8 +1,10 @@
-import mongoose from 'mongoose'
+import mongoose from "mongoose";
 
 const connectDb = async () => {
-  await mongoose.connect(process.env.URI!)
-}
+	if (!process.env.URI) {
+		return;
+	}
+	await mongoose.connect(process.env.URI);
+};
 
-export default connectDb
-
+export default connectDb;

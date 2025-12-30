@@ -1,47 +1,49 @@
-import 'dotenv/config'
-import type {Request, Response} from 'express'
-import express from 'express'
-import connectDB from './config/database.ts'
-import User from './models/user.ts'
+import "dotenv/config";
+import type { Request, Response } from "express";
+import express from "express";
+import connectDB from "./config/database.ts";
+import User from "./models/user.ts";
 
-const app = express()
+const app = express();
 
-app.use(express.json())
+app.use(express.json());
 
-app.post('/signup', async(req:Request, res:Response)=> {
+app.post("/signup", async (req: Request, res: Response) => {
+	try {
+		const { firstName, lastName, email, password, age, gender } = req.body;
 
-  try {
+		const userData = {
+			firstName,
+			lastName,
+			email,
+			password,
+			age,
+			gender,
+		};
 
-    const {firstName, lastName, email, password, age, gender} = req.body
-    
-  const userData = {
-    firstName,
-    lastName,
-    email,
-    password,
-    age,
-    gender
-  }
+		const user = new User(userData);
 
-  const user = new User(userData)
-  await user.save()
+		const exitingUser = await User.findOne({ email: email });
 
-  res.status(201).send('User creates succssfully')
+		if (exitingUser) {
+			throw new Error("user already exits");
+		}
 
-  } catch (error ) {
-    console.log(error.message)
-    res.status(400).send(error.message)
-  }
+		await user.save();
 
+		res.status(201).send("User creates succssfully");
+	} catch (error) {
+		res.status(400).send(error.message);
+	}
+});
 
-})
-
-connectDB().then(()=> {
-  console.log('Database connected successfully')
-app.listen(3000, ()=> {
-  console.log('server is runninh on port 3000')
-})
-}).catch((error: Error)=> {
-  console.log('Can not connecto to database', error.message)
-})
-
+connectDB()
+	.then(() => {
+		console.log("Database connected successfully");
+		app.listen(3000, () => {
+			console.log("server is running on port 3000");
+		});
+	})
+	.catch((error: Error) => {
+		console.log("Can not connecto to database", error.message);
+	});
