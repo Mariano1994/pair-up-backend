@@ -1,8 +1,8 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
 
 const connectDb = async () => {
-  await mongoose.connect(process.env.URI)
+  await mongoose.connect(process.env.URI!)
 }
 
-module.exports = connectDb
+export default connectDb
 
