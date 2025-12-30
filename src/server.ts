@@ -37,6 +37,16 @@ app.post("/signup", async (req: Request, res: Response) => {
 	}
 });
 
+app.get("/users", async (_req: Request, res: Response) => {
+	try {
+		const users = await User.find();
+
+		res.status(200).send({ users, quantity: users.length });
+	} catch (error) {
+		res.status(400).send(`fail to get users ${error.message}`);
+	}
+});
+
 connectDB()
 	.then(() => {
 		console.log("Database connected successfully");
