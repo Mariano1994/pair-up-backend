@@ -63,6 +63,17 @@ app.get("/users/:id", async (req: Request, res: Response) => {
 		res.send(error.message);
 	}
 });
+// Delete user by Id - Find a user by Id and delete from the tadabase
+app.delete("/users/:id", async (req: Request, res: Response) => {
+	try {
+		const { id } = req.params;
+		await User.findByIdAndDelete(id);
+		res.status(200).send("user deleted successfully");
+	} catch (error) {
+		console.log(error.message);
+		res.status(400).send(error.message);
+	}
+});
 
 connectDB()
 	.then(() => {
