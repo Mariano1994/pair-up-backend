@@ -1,9 +1,11 @@
 import "dotenv/config";
+import bcrypt from "bcrypt";
 import type { Request, Response } from "express";
 import express from "express";
 import mongoose from "mongoose";
 import connectDB from "./config/database.ts";
 import User from "./models/user.ts";
+import { signupDataValidation } from "./utils/signup-data-validation.ts";
 
 const app = express();
 
@@ -12,6 +14,9 @@ app.use(express.json());
 // Signup endpoint - Create new user and save on database if the user not exists yet.
 app.post("/signup", async (req: Request, res: Response) => {
 	try {
+		// This function validate if the data to create a new user attend all the requiments
+		signupDataValidation(req, res);
+
 		const {
 			name,
 			profissionalTitle,
@@ -34,12 +39,14 @@ app.post("/signup", async (req: Request, res: Response) => {
 			});
 		}
 
+		const hashedPassword = await bcrypt.hash(password, 10);
+
 		// Create and save user
 		const userData = {
 			name,
 			profissionalTitle,
-			email, // TODO: Validate email format
-			password, // TODO: Encrypt password
+			email,
+			password: hashedPassword,
 			age,
 			gender,
 			photoUrl,
