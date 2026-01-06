@@ -12,21 +12,17 @@ app.use(express.json());
 // Signup endpoint - Create new user and save on database if the user not exists yet.
 app.post("/signup", async (req: Request, res: Response) => {
 	try {
-		const { firstName, lastName, email, password, age, gender } = req.body;
-
-		// Validate required fields
-		if (!firstName || !lastName || !email || !password) {
-			return res.status(400).json({
-				error: "Missing required fields",
-				details: "firstName, lastName, email, and password are required",
-			});
-		}
-
-		// Basic email format validation
-		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		if (!emailRegex.test(email)) {
-			return res.status(400).json({ error: "Invalid email format" });
-		}
+		const {
+			name,
+			profissionalTitle,
+			email,
+			password,
+			age,
+			gender,
+			photoUrl,
+			about,
+			skills,
+		} = req.body;
 
 		// Validate age if provided
 		if (age !== undefined && (typeof age !== "number" || age < 0)) {
@@ -48,12 +44,15 @@ app.post("/signup", async (req: Request, res: Response) => {
 
 		// Create and save user
 		const userData = {
-			firstName,
-			lastName,
+			name,
+			profissionalTitle,
 			email,
 			password,
 			age,
 			gender,
+			photoUrl,
+			about,
+			skills,
 		};
 
 		const user = new User(userData);
@@ -149,13 +148,15 @@ app.delete("/users/:id", async (req: Request, res: Response) => {
 // Update user by Id - Find a user by Id and update the user's information
 app.put("/users/:id", async (req: Request, res: Response) => {
 	const { id } = req.params;
-	const userData = req.body;
+	const dataToUpdateInUser = req.body;
 
 	try {
 		if (!mongoose.Types.ObjectId.isValid(id)) {
 			return res.status(400).json({ error: "Invalid user ID format" });
 		}
-		const updatedUser = await User.findByIdAndUpdate(id, userData);
+		const updatedUser = await User.findByIdAndUpdate(id, dataToUpdateInUser, {
+			runValidators: true,
+		});
 
 		if (!updatedUser) {
 			return res.status(404).json({ error: "User not found" });
