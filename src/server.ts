@@ -24,14 +24,6 @@ app.post("/signup", async (req: Request, res: Response) => {
 			skills,
 		} = req.body;
 
-		// Validate age if provided
-		if (age !== undefined && (typeof age !== "number" || age < 0)) {
-			return res.status(400).json({
-				error: "Invalid age",
-				details: "Age must be a positive number",
-			});
-		}
-
 		// Check if user already exists BEFORE creating User object
 		const existingUser = await User.findOne({ email: email });
 
@@ -46,8 +38,8 @@ app.post("/signup", async (req: Request, res: Response) => {
 		const userData = {
 			name,
 			profissionalTitle,
-			email,
-			password,
+			email, // TODO: Validate email format
+			password, // TODO: Encrypt password
 			age,
 			gender,
 			photoUrl,
@@ -63,7 +55,6 @@ app.post("/signup", async (req: Request, res: Response) => {
 			userId: savedUser._id,
 		});
 	} catch (error) {
-		console.error("Error creating user:", error);
 		const errorMessage =
 			error instanceof Error ? error.message : "Unknown error occurred";
 		res
@@ -79,7 +70,6 @@ app.get("/feed", async (_req: Request, res: Response) => {
 
 		res.status(200).json({ users, quantity: users.length });
 	} catch (error) {
-		console.error("Error fetching users:", error);
 		const errorMessage =
 			error instanceof Error ? error.message : "Unknown error occurred";
 		res
@@ -89,16 +79,16 @@ app.get("/feed", async (_req: Request, res: Response) => {
 });
 
 // Get user by Id - Get a particular user according to given Id
-app.get("/users/:id", async (req: Request, res: Response) => {
+app.get("/users/:userId", async (req: Request, res: Response) => {
 	try {
-		const { id } = req.params;
+		const { userId } = req.params;
 
 		// Validate MongoDB ObjectId format
-		if (!mongoose.Types.ObjectId.isValid(id)) {
+		if (!mongoose.Types.ObjectId.isValid(userId)) {
 			return res.status(400).json({ error: "Invalid user ID format" });
 		}
 
-		const user = await User.findById(id);
+		const user = await User.findById(userId);
 
 		if (!user) {
 			return res.status(404).json({ error: "User not found" });
@@ -115,17 +105,17 @@ app.get("/users/:id", async (req: Request, res: Response) => {
 	}
 });
 // Delete user by Id - Find a user by Id and delete from the database
-app.delete("/users/:id", async (req: Request, res: Response) => {
+app.delete("/users/:userId", async (req: Request, res: Response) => {
 	try {
-		const { id } = req.params;
+		const { userId } = req.params;
 
 		// Validate MongoDB ObjectId format
-		if (!mongoose.Types.ObjectId.isValid(id)) {
+		if (!mongoose.Types.ObjectId.isValid(userId)) {
 			return res.status(400).json({ error: "Invalid user ID format" });
 		}
 
 		// Delete user and check if it existed
-		const deletedUser = await User.findByIdAndDelete(id);
+		const deletedUser = await User.findByIdAndDelete(userId);
 
 		if (!deletedUser) {
 			return res.status(404).json({ error: "User not found" });
@@ -133,7 +123,7 @@ app.delete("/users/:id", async (req: Request, res: Response) => {
 
 		res.status(200).json({
 			message: "User deleted successfully",
-			userId: id,
+			userId: userId,
 		});
 	} catch (error) {
 		console.error("Error deleting user:", error);
@@ -146,17 +136,26 @@ app.delete("/users/:id", async (req: Request, res: Response) => {
 });
 
 // Update user by Id - Find a user by Id and update the user's information
-app.put("/users/:id", async (req: Request, res: Response) => {
-	const { id } = req.params;
+app.put("/users/:userId", async (req: Request, res: Response) => {
+	const { userId } = req.params;
 	const dataToUpdateInUser = req.body;
 
 	try {
-		if (!mongoose.Types.ObjectId.isValid(id)) {
+		if (!mongoose.Types.ObjectId.isValid(userId)) {
 			return res.status(400).json({ error: "Invalid user ID format" });
 		}
-		const updatedUser = await User.findByIdAndUpdate(id, dataToUpdateInUser, {
-			runValidators: true,
-		});
+
+		if (["email"].every((key) => key in dataToUpdateInUser)) {
+			return res.status(400).json({ error: "Email cannot be updated" });
+		}
+
+		const updatedUser = await User.findByIdAndUpdate(
+			userId,
+			dataToUpdateInUser,
+			{
+				runValidators: true,
+			},
+		);
 
 		if (!updatedUser) {
 			return res.status(404).json({ error: "User not found" });
@@ -164,10 +163,9 @@ app.put("/users/:id", async (req: Request, res: Response) => {
 
 		res.status(200).json({
 			message: "User updated successfully",
-			userId: id,
+			userId: userId,
 		});
 	} catch (error) {
-		console.error("Error updating user:", error);
 		const errorMessage =
 			error instanceof Error ? error.message : "Unknown error occurred";
 		res

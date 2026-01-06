@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+import validator from "validator";
+
 const { Schema } = mongoose;
 
 const userSchema = new Schema(
@@ -13,7 +15,7 @@ const userSchema = new Schema(
 			unique: true,
 			validate: {
 				validator: (v: string) => {
-					return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+					return validator.isEmail(v);
 				},
 				message: "Invalid email format",
 			},
@@ -25,9 +27,10 @@ const userSchema = new Schema(
 			required: true,
 			validate: {
 				validator: (v: string) => {
-					return v.length >= 8;
+					return validator.isStrongPassword(v);
 				},
-				message: "Password must be at least 8 characters long",
+				message:
+					"Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character",
 			},
 		},
 		age: {
@@ -35,7 +38,7 @@ const userSchema = new Schema(
 			required: false,
 			validate: {
 				validator: (v: number) => {
-					return v >= 18;
+					return validator.isInt(v.toString(), { min: 18 });
 				},
 				message: "Age must be at least 18 years old",
 			},
@@ -43,7 +46,12 @@ const userSchema = new Schema(
 		gender: {
 			type: String,
 			enum: ["male", "female", "other"],
-			message: "Gender must be either male, female, or other",
+			validate: {
+				validator: (v: string) => {
+					return validator.isIn(v, ["male", "female", "other"]);
+				},
+				message: "Gender must be either male, female, or other",
+			},
 		},
 		photoUrl: { type: String, default: null, required: false },
 		skills: { type: [String], default: [], required: false },
