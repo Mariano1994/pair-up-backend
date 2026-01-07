@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser";
 import express from "express";
 import { register } from "../src/http/controllers/users/register.ts";
 import connectDB from "./config/database.ts";
+import { auth } from "./http/controllers/middlewares/auth.ts";
 import { deleteUserById } from "./http/controllers/users/delete-user-by-id.ts";
 import { feed } from "./http/controllers/users/feed.ts";
 import { getUserById } from "./http/controllers/users/get-user-by-id.ts";
@@ -11,7 +12,6 @@ import { session } from "./http/controllers/users/session.ts";
 import { updateUserById } from "./http/controllers/users/update-user-by-id.ts";
 
 const app = express();
-
 app.use(express.json());
 app.use(cookieParser());
 
@@ -20,7 +20,7 @@ app.post("/register", register);
 // Login endPoint
 app.post("/login", session);
 // Profile endpoint - Get the user profile
-app.get("/me", profile);
+app.get("/me", auth, profile);
 // Feed endpoint
 app.get("/feed", feed);
 // Get user by Id - Get a particular user according to given Id
