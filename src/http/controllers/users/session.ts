@@ -1,4 +1,3 @@
-import bcrypt from "bcrypt";
 import type { Request, Response } from "express";
 import User from "../../../models/user.ts";
 
@@ -14,20 +13,8 @@ export async function session(req: Request, res: Response) {
 			});
 		}
 
-		// If the user exists, check if the password matches
-		const doesPasswordMatch = await bcrypt.compare(password, user.password);
-		if (!doesPasswordMatch) {
-			return res.status(401).json({
-				message: "Credentials incorrect",
-			});
-		}
+		await user.validateCredentials(password, user.password);
 
-		//check if jwt secret key is present
-		if (!process.env.SECRET_KEY_JWT) {
-			return res.status(500).json({
-				error: "Server configuration error",
-			});
-		}
 		//Asign Token Or create token
 		const token = await user.getJWTToken();
 

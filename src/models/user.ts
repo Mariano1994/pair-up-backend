@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import validator from "validator";
@@ -15,6 +16,7 @@ interface IUser extends mongoose.Document {
 	skills?: string[];
 	about?: string | null;
 	getJWTToken(): Promise<string>;
+	validateCredentials(password: string, userPassword: string): Promise<boolean>;
 }
 
 const userSchema = new Schema(
@@ -89,6 +91,20 @@ userSchema.methods.getJWTToken = async function () {
 	});
 
 	return token;
+};
+
+userSchema.methods.validateCredentials = async (
+	passwordGivenByUser: string,
+	hashedPassword: string,
+) => {
+	const doesPasswordMatch = await bcrypt.compare(
+		passwordGivenByUser,
+		hashedPassword,
+	);
+
+	if (!doesPasswordMatch) {
+		throw new Error("Credentials incorrect");
+	}
 };
 
 const User = mongoose.model<IUser>("User", userSchema);
