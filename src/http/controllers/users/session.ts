@@ -1,6 +1,5 @@
 import bcrypt from "bcrypt";
 import type { Request, Response } from "express";
-import jwt from "jsonwebtoken";
 import User from "../../../models/user.ts";
 
 export async function session(req: Request, res: Response) {
@@ -23,20 +22,17 @@ export async function session(req: Request, res: Response) {
 			});
 		}
 
-		//create Token
+		//check if jwt secret key is present
 		if (!process.env.SECRET_KEY_JWT) {
 			return res.status(500).json({
 				error: "Server configuration error",
 			});
 		}
-
-		const token = await jwt.sign(
-			{ sub: user?._id },
-			process.env.SECRET_KEY_JWT,
-		);
+		//Asign Token Or create token
+		const token = await user.getJWTToken();
 
 		//create Cookie
-		res.cookie("Token", token);
+		res.cookie("Token", token, { httpOnly: true });
 
 		res.status(200).json({
 			message: "Login successful",

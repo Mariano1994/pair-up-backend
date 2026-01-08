@@ -1,8 +1,21 @@
+import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
-
 import validator from "validator";
 
 const { Schema } = mongoose;
+
+interface IUser extends mongoose.Document {
+	name: string;
+	profissionalTitle?: string | null;
+	email: string;
+	password: string;
+	age?: number | null;
+	gender?: "male" | "female" | "other" | null;
+	photoUrl?: string | null;
+	skills?: string[];
+	about?: string | null;
+	getJWTToken(): Promise<string>;
+}
 
 const userSchema = new Schema(
 	{
@@ -60,6 +73,24 @@ const userSchema = new Schema(
 	{ timestamps: true },
 );
 
-const User = mongoose.model("User", userSchema);
+/**
+ * Generates a JSON Web Token (JWT) for the current user instance.
+ * The token includes the user's _id as the subject ("sub") and is valid for 7 days.
+ * Throws an error if the JWT secret key is not found in environment variables.
+ */
+userSchema.methods.getJWTToken = async function () {
+	// check if jwt secret key is present
+	if (!process.env.SECRET_KEY_JWT) {
+		throw new Error("Server configuration error: JWT secret key not found");
+	}
+
+	const token = jwt.sign({ sub: this._id }, process.env.SECRET_KEY_JWT, {
+		expiresIn: "7d",
+	});
+
+	return token;
+};
+
+const User = mongoose.model<IUser>("User", userSchema);
 
 export default User;
