@@ -7,7 +7,8 @@ import { logout } from "./logout.ts";
 import { profile } from "./profile.ts";
 import { register } from "./register.ts";
 import { session } from "./session.ts";
-import { updateUserById } from "./update-user-by-id.ts";
+import { updateUserProfile } from "./update-user-profile.ts";
+import { userPasswordUpdate } from "./user-password-update.ts";
 
 export const userRoutes = express.Router();
 
@@ -19,5 +20,6 @@ userRoutes.delete("/users/:userId", deleteUserById);
 userRoutes.post("/logout", logout);
 
 //Authenticated Routes
-userRoutes.put("/users/:userId", auth, updateUserById);
+userRoutes.put("/me/edit", auth, updateUserProfile);
 userRoutes.get("/me", auth, profile);
+userRoutes.put("/me/edit-password", auth, userPasswordUpdate);

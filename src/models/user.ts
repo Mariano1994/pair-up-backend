@@ -5,7 +5,7 @@ import validator from "validator";
 
 const { Schema } = mongoose;
 
-interface IUser extends mongoose.Document {
+export interface IUser extends mongoose.Document {
 	name: string;
 	profissionalTitle?: string | null;
 	email: string;

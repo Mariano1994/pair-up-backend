@@ -1,22 +1,20 @@
 import type { Request, Response } from "express";
-import mongoose from "mongoose";
 import User from "../../../models/user.ts";
 
-export async function updateUserById(req: Request, res: Response) {
+export async function updateUserProfile(req: Request, res: Response) {
 	try {
-		const { userId } = req.params;
 		const dataToUpdateInUser = req.body;
 
-		if (!mongoose.Types.ObjectId.isValid(userId)) {
-			return res.status(400).json({ error: "Invalid user ID format" });
+		const invalidEditFilds = ["email", "password"];
+
+		if (invalidEditFilds.every((key) => key in dataToUpdateInUser)) {
+			return res.status(400).json({ error: " Email cannot be updated" });
 		}
 
-		if (["email"].every((key) => key in dataToUpdateInUser)) {
-			return res.status(400).json({ error: "Email cannot be updated" });
-		}
+		const { user } = req;
 
 		const updatedUser = await User.findByIdAndUpdate(
-			userId,
+			user._id,
 			dataToUpdateInUser,
 			{
 				runValidators: true,
@@ -29,7 +27,7 @@ export async function updateUserById(req: Request, res: Response) {
 
 		res.status(200).json({
 			message: "User updated successfully",
-			userId: userId,
+			userId: user._id,
 		});
 	} catch (error) {
 		const errorMessage =

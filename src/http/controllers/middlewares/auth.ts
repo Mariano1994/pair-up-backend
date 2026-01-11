@@ -1,12 +1,12 @@
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import type { Document } from "mongoose";
+import type { IUser } from "../../../models/user.ts";
 import User from "../../../models/user.ts";
 
 declare global {
 	namespace Express {
 		interface Request {
-			user: Document;
+			user: IUser;
 		}
 	}
 }
