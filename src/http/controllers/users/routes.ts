@@ -3,6 +3,7 @@ import { auth } from "../middlewares/auth.ts";
 import { deleteUserById } from "./delete-user-by-id.ts";
 import { feed } from "./feed.ts";
 import { getUserById } from "./get-user-by-id.ts";
+import { logout } from "./logout.ts";
 import { profile } from "./profile.ts";
 import { register } from "./register.ts";
 import { session } from "./session.ts";
@@ -15,6 +16,7 @@ userRoutes.post("/register", register);
 userRoutes.post("/login", session);
 userRoutes.get("/users/:userId", getUserById);
 userRoutes.delete("/users/:userId", deleteUserById);
+userRoutes.post("/logout", logout);
 
 //Authenticated Routes
 userRoutes.put("/users/:userId", auth, updateUserById);
