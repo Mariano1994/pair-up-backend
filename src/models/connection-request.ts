@@ -30,6 +30,8 @@ const connectionRequestSchema = new Schema(
 	{ timestamps: true },
 );
 
+connectionRequestSchema.index({ fromUserId: 1, toUserId: 1 });
+
 const ConnectionRequest = mongoose.model<IConnectionRequest>(
 	"ConnectionResquest",
 	connectionRequestSchema,
