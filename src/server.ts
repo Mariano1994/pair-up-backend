@@ -2,13 +2,14 @@ import "dotenv/config";
 import cookieParser from "cookie-parser";
 import express from "express";
 import connectDB from "./config/database.ts";
+import { requestConnectionRoutes } from "./http/controllers/request-connections/routes.ts";
 import { userRoutes } from "./http/controllers/users/routes.ts";
 
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/", userRoutes);
+app.use("/", userRoutes, requestConnectionRoutes);
 
 connectDB()
 	.then(() => {

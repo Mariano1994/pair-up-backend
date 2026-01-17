@@ -8,18 +8,19 @@ import { profile } from "./profile.ts";
 import { register } from "./register.ts";
 import { session } from "./session.ts";
 import { updateUserProfile } from "./update-user-profile.ts";
-import { userPasswordUpdate } from "./user-password-update.ts";
 
 export const userRoutes = express.Router();
 
 userRoutes.get("/feed", feed);
+
 userRoutes.post("/register", register);
 userRoutes.post("/login", session);
-userRoutes.get("/users/:userId", getUserById);
-userRoutes.delete("/users/:userId", deleteUserById);
 userRoutes.post("/logout", logout);
 
+userRoutes.get("/users/:userId", getUserById);
+userRoutes.delete("/users/:userId", deleteUserById);
+
 //Authenticated Routes
-userRoutes.put("/me/edit", auth, updateUserProfile);
 userRoutes.get("/me", auth, profile);
-userRoutes.put("/me/edit-password", auth, userPasswordUpdate);
+userRoutes.put("/me/edit", auth, updateUserProfile);
+userRoutes.put("/me/edit-password", auth, updateUserProfile);

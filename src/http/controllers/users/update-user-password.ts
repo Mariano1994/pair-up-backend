@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import type { Request, Response } from "express";
 import validator from "validator";
 // import User from "../../../models/user.ts";
-export async function userPasswordUpdate(req: Request, res: Response) {
+export async function UpdateUserPassword(req: Request, res: Response) {
 	try {
 		const { newPassword, currentPassword } = req.body;
 		const { user } = req;
@@ -32,7 +32,7 @@ export async function userPasswordUpdate(req: Request, res: Response) {
 		await user.save();
 
 		res.status(200).json({
-			message: "password update successesfully",
+			message: "password updated successesfully",
 			userId: user._id,
 		});
 	} catch (error) {
