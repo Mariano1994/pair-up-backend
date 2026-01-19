@@ -15,7 +15,7 @@ export async function sendRequestConnection(req: Request, res: Response) {
 		if (toUserId === fromUserId.toString()) {
 			return res
 				.status(409)
-				.json({ message: "Failed to send connetion request 1" });
+				.json({ message: "You can not send connection request to yourself" });
 		}
 
 		const user = await User.findById(toUserId);

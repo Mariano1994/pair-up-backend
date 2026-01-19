@@ -18,7 +18,7 @@ export async function session(req: Request, res: Response) {
 		//Asign Token Or create token
 		const token = await user.getJWTToken();
 
-		//create Cookie
+		//Create Cookie
 		res.cookie("Token", token, { httpOnly: true });
 
 		res.status(200).json({

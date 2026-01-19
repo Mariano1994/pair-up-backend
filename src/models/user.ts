@@ -75,7 +75,7 @@ const userSchema = new Schema(
 	{ timestamps: true },
 );
 
-/**
+/*
  * Generates a JSON Web Token (JWT) for the current user instance.
  * The token includes the user's _id as the subject ("sub") and is valid for 7 days.
  * Throws an error if the JWT secret key is not found in environment variables.
@@ -108,5 +108,4 @@ userSchema.methods.validateCredentials = async (
 };
 
 const User = mongoose.model<IUser>("User", userSchema);
-
 export default User;

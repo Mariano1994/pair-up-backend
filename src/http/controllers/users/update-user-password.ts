@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import type { Request, Response } from "express";
 import validator from "validator";
-// import User from "../../../models/user.ts";
+
 export async function UpdateUserPassword(req: Request, res: Response) {
 	try {
 		const { newPassword, currentPassword } = req.body;
@@ -14,7 +14,7 @@ export async function UpdateUserPassword(req: Request, res: Response) {
 
 		if (!doesPasswordMacth) {
 			res.status(400).json({
-				message: "Ivalidad Password",
+				message: "Invalid Password",
 			});
 		}
 
