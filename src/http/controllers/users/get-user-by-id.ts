@@ -18,7 +18,6 @@ export async function getUserById(req: Request, res: Response) {
 
 		res.status(200).json({ user });
 	} catch (error) {
-		console.error("Error fetching user:", error);
 		const errorMessage =
 			error instanceof Error ? error.message : "Unknown error occurred";
 		res

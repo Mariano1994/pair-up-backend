@@ -39,6 +39,6 @@ export async function create(req: Request, res: Response) {
 			error instanceof Error ? error.message : "Unknown error occurred";
 		res
 			.status(500)
-			.json({ error: "Failed to create user", details: errorMessage });
+			.json({ error: "Failed to create project", details: errorMessage });
 	}
 }
