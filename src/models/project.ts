@@ -5,15 +5,15 @@ const { Schema } = mongoose;
 
 export interface IProject extends mongoose.Document {
 	title: string;
-	authorId: mongoose.Schema.Types.ObjectId;
+	authorId: mongoose.Types.ObjectId;
 	category?: string;
 	description?: string;
 	coverPhoto?: string;
-	status: "not started" | " in progress" | "finished" | "canceled";
-	colaboratorsIds?: string[];
+	status: "not started" | "in progress" | "finished" | "canceled";
+	colaboratorsIds?: mongoose.Types.ObjectId[];
 }
 
-const projectShema = new Schema(
+const projectShema = new Schema<IProject>(
 	{
 		title: { type: String, require: true },
 		authorId: { type: mongoose.Schema.Types.ObjectId, require: true },
