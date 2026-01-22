@@ -6,14 +6,14 @@ export async function replayRequestConnection(req: Request, res: Response) {
 	try {
 		const { connectionId } = req.params;
 		const { status } = req.params;
-		const acceptedStatusValues = ["accepted", "rejected"];
 		const { user } = req;
+		const validStatusValues = ["accepted", "rejected"];
 
 		if (!mongoose.Types.ObjectId.isValid(connectionId)) {
 			return res.status(500).json({ message: "Invalid Id format" });
 		}
 
-		if (!acceptedStatusValues.includes(status)) {
+		if (!validStatusValues.includes(status)) {
 			return res.status(500).json({ message: "Status invalid" });
 		}
 		const connectionRequest = await ConnectionRequest.findById(connectionId);
