@@ -12,4 +12,4 @@ projecRoutes.get("/project/feed", projectFeed);
 projecRoutes.get("/project/:projectId", getProjectById);
 projecRoutes.post("/project/create", auth, create);
 projecRoutes.put("/project/:projectId", auth, UpdateProjectInfo);
-projecRoutes.get("/projects/me", auth, getMyProjects);
+projecRoutes.get("/projects/my-projects", auth, getMyProjects);
