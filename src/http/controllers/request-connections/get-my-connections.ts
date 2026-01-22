@@ -7,8 +7,16 @@ export async function getMyConnetions(req: Request, res: Response) {
 		const { user } = req;
 
 		const connections = await ConnectionRequest.find({
-			toUserId: new mongoose.Types.ObjectId(user._id.toString()),
-			status: "accepted",
+			$or: [
+				{
+					toUserId: new mongoose.Types.ObjectId(user._id.toString()),
+					status: "accepted",
+				},
+				{
+					fromUserId: new mongoose.Types.ObjectId(user._id.toString()),
+					status: "accepted",
+				},
+			],
 		} as Record<string, unknown>).populate("fromUserId", [
 			"name",
 			"age",
@@ -18,7 +26,11 @@ export async function getMyConnetions(req: Request, res: Response) {
 			"about",
 		]);
 
-		res.status(200).json({ connections, quantity: connections.length });
+		const myConnections = connections.map(
+			(connection) => connection.fromUserId,
+		);
+
+		res.status(200).json({ myConnections, quantity: myConnections.length });
 	} catch (error) {
 		const errorMessage =
 			error instanceof Error ? error.message : "Unknown error occurred";

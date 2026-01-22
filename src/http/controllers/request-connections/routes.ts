@@ -1,6 +1,7 @@
 import express from "express";
 import { auth } from "../middlewares/auth.ts";
 import { getMyConnetions } from "./get-my-connections.ts";
+import { getMyConnectionRequest } from "./get-my-connetion-requests.ts";
 import { replayRequestConnection } from "./reply-request-connection.ts";
 import { sendRequestConnection } from "./send-request-connection.ts";
 
@@ -21,4 +22,9 @@ requestConnectionRoutes.get(
 	"/request/connection/my-connections",
 	auth,
 	getMyConnetions,
+);
+requestConnectionRoutes.get(
+	"/request/connection/my-requests",
+	auth,
+	getMyConnectionRequest,
 );
