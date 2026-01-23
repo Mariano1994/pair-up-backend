@@ -2,6 +2,15 @@ import type { Request, Response } from "express";
 import mongoose from "mongoose";
 import ConnectionRequest from "../../../models/connection-request.ts";
 
+const USER_SAFE_DATA = [
+	"name",
+	"age",
+	"profissionalTitle",
+	"photoUrl",
+	"skill",
+	"about",
+]; // PULBLIC USER INFO
+
 export async function getMyConnetions(req: Request, res: Response) {
 	try {
 		const { user } = req;
@@ -17,18 +26,16 @@ export async function getMyConnetions(req: Request, res: Response) {
 					status: "accepted",
 				},
 			],
-		} as Record<string, unknown>).populate("fromUserId", [
-			"name",
-			"age",
-			"profissionalTitle",
-			"photoUrl",
-			"skill",
-			"about",
-		]);
+		} as Record<string, unknown>)
+			.populate("fromUserId", USER_SAFE_DATA)
+			.populate("toUserId", USER_SAFE_DATA);
 
-		const myConnections = connections.map(
-			(connection) => connection.fromUserId,
-		);
+		const myConnections = connections.map((connection) => {
+			if (connection.fromUserId.toString() === user._id.toString()) {
+				return connection.toUserId;
+			}
+			return connection.fromUserId;
+		});
 
 		res.status(200).json({ myConnections, quantity: myConnections.length });
 	} catch (error) {

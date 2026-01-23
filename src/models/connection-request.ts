@@ -16,7 +16,11 @@ const connectionRequestSchema = new Schema(
 			ref: "User", // Reference to USER collection
 			require: true,
 		},
-		toUserId: { type: mongoose.Schema.Types.ObjectId, require: true },
+		toUserId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User", // Reference to USER collection
+			require: true,
+		},
 		status: {
 			type: String,
 			enum: ["pendding", "accepted", "rejected"],
