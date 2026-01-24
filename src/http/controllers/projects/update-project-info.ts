@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import mongoose from "mongoose";
 import Project from "../../../models/project.ts";
+
 export async function UpdateProjectInfo(req: Request, res: Response) {
 	try {
 		const { projectId } = req.params;

@@ -18,7 +18,7 @@ const connectionRequestSchema = new Schema(
 		},
 		toUserId: {
 			type: mongoose.Schema.Types.ObjectId,
-			ref: "User", // Reference to USER collection
+			ref: "User",
 			require: true,
 		},
 		status: {
@@ -29,7 +29,7 @@ const connectionRequestSchema = new Schema(
 			validator: (v: string) => {
 				return validator.isIn(v, ["pendding", "accepted", "rejected"]);
 			},
-			message: `{VALUE} is no accept status`,
+			message: `{VALUE} is not valid statud`,
 		},
 	},
 	{ timestamps: true },
