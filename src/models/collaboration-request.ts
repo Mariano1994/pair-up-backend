@@ -13,15 +13,15 @@ const collaborationRequestSchema = new Schema(
 	{
 		collaboratorId: {
 			type: mongoose.Schema.Types.ObjectId,
-			fre: "User",
-			require: true,
+			ref: "User",
+			required: true,
 		},
-		projectId: { type: mongoose.Schema.Types.ObjectId, require: true },
+		projectId: { type: mongoose.Schema.Types.ObjectId, required: true },
 		status: {
 			type: String,
 			enum: ["pendding", "accepted", "rejected"],
 			default: "pendding",
-			require: true,
+			required: true,
 			validator: (v: string) => {
 				return validator.isIn(v, ["pendding", "accepted", "rejected"]);
 			},
