@@ -1,6 +1,6 @@
 # PairUp Backend
 
-A robust RESTful API backend for a collaboration platform that connects developers and creators, enabling them to collaborate on projects, build professional networks, and discover new opportunities.
+A robust RESTful API backend for a collaboration platform designed to connect professionals, service providers, entrepreneurs, and visionaries. Whether you're offering services, have a great idea, or want to build an exceptional team, PairUp helps you find the right collaborators and turn your projects into reality. Connect with like-minded individuals, build your professional network, and discover opportunities to collaborate on meaningful projects.
 
 ## 🚀 Features
 
