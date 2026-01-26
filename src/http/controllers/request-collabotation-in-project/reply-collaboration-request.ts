@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import mongoose from "mongoose";
+import "../middlewares/auth.ts";
 import { CollaborationRequest } from "../../../models/collaboration-request.ts";
 import Project from "../../../models/project.ts";
 import User from "../../../models/user.ts";
