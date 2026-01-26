@@ -3,7 +3,7 @@ import validator from "validator";
 
 export interface ICollaborationRequestProps extends mongoose.Document {
 	collaboratorId: mongoose.Schema.Types.ObjectId;
-	toProjectId: mongoose.Schema.Types.ObjectId;
+	projectId: mongoose.Schema.Types.ObjectId;
 	status: "pendding" | "accepted" | "rejected";
 }
 

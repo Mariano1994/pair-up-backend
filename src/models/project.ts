@@ -3,6 +3,13 @@ import validator from "validator";
 
 const { Schema } = mongoose;
 
+export interface ICollaborator {
+	name: string;
+	photoUrl: string | null | undefined;
+	about: string | null | undefined;
+	profissionalTitle: string | null | undefined;
+}
+
 export interface IProject extends mongoose.Document {
 	title: string;
 	authorId: mongoose.Types.ObjectId;
@@ -10,7 +17,7 @@ export interface IProject extends mongoose.Document {
 	description?: string;
 	coverPhoto?: string;
 	status: "not started" | "in progress" | "finished" | "canceled";
-	colaboratorsIds?: mongoose.Types.ObjectId[];
+	collaborators: ICollaborator[];
 }
 
 const projectShema = new Schema<IProject>(
@@ -37,8 +44,15 @@ const projectShema = new Schema<IProject>(
 					"Status must be either not started, in progress, finished or canceled",
 			},
 		},
-		colaboratorsIds: {
-			type: [mongoose.Schema.Types.ObjectId],
+		collaborators: {
+			type: [
+				{
+					name: { type: String, required: true },
+					photoUrl: { type: String, required: false, default: null },
+					about: { type: String, required: false, default: null },
+					profissionalTitle: { type: String, required: false, default: null },
+				},
+			],
 			default: [],
 			require: false,
 		},
