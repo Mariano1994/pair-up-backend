@@ -11,16 +11,15 @@ import { updateUserProfile } from "./update-user-profile.ts";
 
 export const userRoutes = express.Router();
 
-userRoutes.get("/feed", feed);
-
 userRoutes.post("/register", register);
 userRoutes.post("/login", session);
 userRoutes.post("/logout", logout);
 
-userRoutes.get("/users/:userId", getUserById);
 userRoutes.delete("/users/:userId", deleteUserById);
 
 //Authenticated Routes
+userRoutes.get("/feed", auth, feed);
 userRoutes.get("/me", auth, profile);
+userRoutes.get("/users/:userId", auth, getUserById);
 userRoutes.put("/me/edit", auth, updateUserProfile);
 userRoutes.put("/me/edit-password", auth, updateUserProfile);
