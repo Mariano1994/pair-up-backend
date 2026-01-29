@@ -16,10 +16,12 @@ export async function feed(req: Request, res: Response) {
 			],
 		} as Record<string, unknown>);
 
-		// Find all pending connection requests sent by the logged-in user
-		const sentRequests = await ConnectionRequest.find({
-			fromUserId: loggedUserId,
-			status: "pendding",
+		// Find all pending connection requests involving the logged-in user
+		const pendingRequests = await ConnectionRequest.find({
+			$or: [
+				{ fromUserId: loggedUserId, status: "pendding" },
+				{ toUserId: loggedUserId, status: "pendding" },
+			],
 		} as Record<string, unknown>);
 
 		// Build set of user IDs that should NOT appear in the feed
@@ -39,9 +41,20 @@ export async function feed(req: Request, res: Response) {
 			}
 		}
 
-		// Exclude users that the logged-in user has already sent a connection request to
-		for (const request of sentRequests) {
-			excludedUserIds.add(request.toUserId.toString());
+		// Exclude users involved in pending connection requests
+		// - Users that the logged-in user has sent requests to (fromUserId === loggedUserId)
+		// - Users that have sent requests to the logged-in user (toUserId === loggedUserId)
+		for (const request of pendingRequests) {
+			const fromId = request.fromUserId.toString();
+			const toId = request.toUserId.toString();
+
+			if (fromId === loggedUserId.toString()) {
+				// Logged-in user sent request to this user
+				excludedUserIds.add(toId);
+			} else if (toId === loggedUserId.toString()) {
+				// This user sent request to logged-in user
+				excludedUserIds.add(fromId);
+			}
 		}
 
 		const excludedObjectIds = Array.from(excludedUserIds).map(

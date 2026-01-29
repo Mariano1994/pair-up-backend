@@ -8,7 +8,7 @@ import { UpdateProjectInfo } from "./update-project-info.ts";
 
 export const projecRoutes = express.Router();
 
-projecRoutes.get("/project/feed", projectFeed);
+projecRoutes.get("/project/feed", auth, projectFeed);
 projecRoutes.get("/project/:projectId", getProjectById);
 projecRoutes.post("/project/create", auth, create);
 projecRoutes.put("/project/:projectId", auth, UpdateProjectInfo);
